@@ -32,7 +32,7 @@ The mod acts when a session starts. The first time it runs, a toast tells you wh
 - Before it changes an existing file it saves a copy next to it, once: `keybindings.json.ctrl-enter-newline.bak`.
 - It **never overrides you**: if `Ctrl+Enter` already points to another action, or is set to `null`, it leaves the file alone and says so.
 - If the file is not valid JSON it leaves it alone.
-- The file is `CLAUDE_CONFIG_DIR/keybindings.json` when that variable is set, otherwise `~/.claude/keybindings.json` (`%USERPROFILE%\.claude` on Windows). It works the same on Windows, macOS and Linux.
+- The file is `CLAUDE_CONFIG_DIR/keybindings.json` when that variable is set, otherwise `~/.claude/keybindings.json` (`%USERPROFILE%\.claude` on Windows). Tested on Windows and Linux; macOS takes the same code path (`~/.claude`) but is untested.
 
 ## The `/ctrl-enter` command
 
