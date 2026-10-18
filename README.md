@@ -38,11 +38,11 @@ The mod acts when a session starts. The first time it runs, a toast tells you wh
 
 | Command | Does |
 | --- | --- |
-| `/ctrl-enter` or `/ctrl-enter status` | Shows whether the binding is on, which file it is in, and who added it |
-| `/ctrl-enter off` | Removes the binding **if this mod added it**, and stops the mod from touching the file again |
+| `/ctrl-enter` or `/ctrl-enter status` | Shows whether the binding is on and which file it is in |
+| `/ctrl-enter off` | Removes the `ctrl+enter` binding **if it points to `chat:newline`** (whoever added it), and stops the mod from touching the file again |
 | `/ctrl-enter on` | Turns it back on |
 
-Uninstalling the plugin does not run any code, so run `/ctrl-enter off` first if you want the binding removed. Or delete the `ctrl+enter` line from `keybindings.json` by hand.
+`/ctrl-enter off` never removes a `ctrl+enter` binding that points to another action. Uninstalling the plugin does not run any code, so run `/ctrl-enter off` first if you want the binding removed, or delete the `ctrl+enter` line from `keybindings.json` by hand.
 
 ## Your terminal has to cooperate
 
@@ -80,6 +80,6 @@ Mod do Claude Code que faz o **Ctrl+Enter quebrar a linha** no prompt, como no a
 /plugin install ctrl-enter-newline --marketplace tjgazel/claude-ctrl-enter-newline
 ```
 
-Responda `y` em `Add marketplace?` e escolha o escopo. O mod adiciona uma linha ao seu `keybindings.json` (`"ctrl+enter": "chat:newline"`), mesclando com o que já existe, guardando uma cópia do arquivo original e sem sobrescrever uma escolha sua. Use `/ctrl-enter status` para ver o estado e `/ctrl-enter off` para remover o atalho.
+Responda `y` em `Add marketplace?` e escolha o escopo. O mod adiciona uma linha ao seu `keybindings.json` (`"ctrl+enter": "chat:newline"`), mesclando com o que já existe, guardando uma cópia do arquivo original e sem sobrescrever uma escolha sua. Use `/ctrl-enter status` para ver o estado e `/ctrl-enter off` para remover o atalho (só se ele apontar para `chat:newline`).
 
 O terminal precisa informar o Ctrl+Enter como uma tecla diferente do Enter (protocolo de teclado Kitty ou similar). Se o Ctrl+Enter enviar a mensagem, use o **Ctrl+J**, que quebra a linha em qualquer terminal.

@@ -17,12 +17,9 @@ const TEXT = {
     failed: (why: string) => `Could not update keybindings.json: ${why}`,
     noDir: 'Could not find the Claude Code config folder (set CLAUDE_CONFIG_DIR, HOME or USERPROFILE).',
     on: 'on: Ctrl+Enter inserts a newline.',
-    ownOn: 'It was added by this mod; /ctrl-enter off removes it.',
-    userOn: 'It was already in your file, so /ctrl-enter off will not remove it.',
     off: 'off: Ctrl+Enter keeps its default action (send now).',
     other: 'other: Ctrl+Enter is bound to another action in your file.',
     removed: 'Removed the Ctrl+Enter binding. Ctrl+Enter is back to its default.',
-    kept: 'The Ctrl+Enter binding was not added by this mod, so it was kept.',
     disabled: 'Disabled: the mod will not touch keybindings.json. Run /ctrl-enter on to enable it again.',
     hint:
       'If Ctrl+Enter still sends your message, your terminal does not report it apart from Enter (it needs the Kitty keyboard protocol). Ctrl+J inserts a newline in any terminal.',
@@ -35,12 +32,9 @@ const TEXT = {
     failed: (why: string) => `Não consegui atualizar o keybindings.json: ${why}`,
     noDir: 'Não encontrei a pasta de configuração do Claude Code (defina CLAUDE_CONFIG_DIR, HOME ou USERPROFILE).',
     on: 'ligado: Ctrl+Enter quebra a linha.',
-    ownOn: 'Foi adicionado por este mod; /ctrl-enter off remove.',
-    userOn: 'Já estava no seu arquivo, então /ctrl-enter off não vai remover.',
     off: 'desligado: Ctrl+Enter mantém a ação padrão (enviar agora).',
     other: 'outro: o Ctrl+Enter está ligado a outra ação no seu arquivo.',
     removed: 'Removi o atalho do Ctrl+Enter. Ele voltou ao padrão.',
-    kept: 'O atalho do Ctrl+Enter não foi adicionado por este mod, então mantive.',
     disabled: 'Desativado: o mod não vai mexer no keybindings.json. Rode /ctrl-enter on para ativar de novo.',
     hint:
       'Se o Ctrl+Enter ainda enviar a mensagem, o seu terminal não o distingue do Enter (precisa do protocolo de teclado Kitty). O Ctrl+J quebra a linha em qualquer terminal.',
@@ -193,7 +187,6 @@ async function enable($: EngineInterface, lang: Lang): Promise<Outcome> {
     if (change.result === 'added') {
       await backup($, path, text)
       await $.fs.write(path, change.text)
-      await $.store.set('owned', true)
       return { message: t.added(path), path }
     }
     if (change.result === 'conflict') return { message: t.conflict, path }
@@ -208,19 +201,17 @@ async function disable($: EngineInterface, lang: Lang): Promise<Outcome> {
   const t = TEXT[lang]
   const path = await keybindingsPath($)
   if (path === undefined) return { message: t.noDir }
-  if ((await $.store.get('owned')) !== true) return { message: t.kept, path }
 
   try {
     const text = await readFile($, path)
     const change = removeBinding(text)
     if (change.result === 'removed') {
+      await backup($, path, text)
       await $.fs.write(path, change.text)
-      await $.store.delete('owned')
       return { message: t.removed, path }
     }
     if (change.result === 'conflict') return { message: t.conflict, path }
     if (change.result === 'invalid') return { message: t.invalid, path }
-    await $.store.delete('owned')
     return { message: t.off, path }
   } catch (err) {
     return { message: t.failed(String(err)), path }
@@ -232,11 +223,9 @@ async function status($: EngineInterface, lang: Lang): Promise<string> {
   const path = await keybindingsPath($)
   if (path === undefined) return t.noDir
   const state = stateOf(await readFile($, path).catch(() => undefined))
-  const owned = (await $.store.get('owned')) === true
   const disabled = (await $.store.get('disabled')) === true
   const lines = [
     state === 'on' ? t.on : state === 'other' ? t.other : state === 'invalid' ? t.invalid : t.off,
-    ...(state === 'on' ? [owned ? t.ownOn : t.userOn] : []),
     ...(disabled ? [t.disabled] : []),
     t.hint,
     t.file(path),
