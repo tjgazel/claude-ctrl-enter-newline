@@ -1,0 +1,9 @@
+{
+  "name": "ctrl-enter-newline",
+  "version": "0.1.0",
+  "description": "Makes Ctrl+Enter insert a newline in the Claude Code prompt, like the desktop app, by adding one binding to keybindings.json.",
+  "author": { "name": "tjgazel" },
+  "homepage": "https://github.com/tjgazel/claude-ctrl-enter-newline",
+  "repository": "https://github.com/tjgazel/claude-ctrl-enter-newline",
+  "license": "MIT"
+}

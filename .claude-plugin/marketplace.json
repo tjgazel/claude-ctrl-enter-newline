@@ -1,0 +1,6 @@
+{
+  "name": "tjgazel-ctrl-enter-newline",
+  "description": "Ctrl+Enter inserts a newline in the Claude Code prompt.",
+  "owner": { "name": "tjgazel" },
+  "plugins": [{ "name": "ctrl-enter-newline", "source": "./" }]
+}
